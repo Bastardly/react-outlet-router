@@ -14,8 +14,6 @@ export interface IRedirect {
   push?: boolean;
 }
 
-export type IUpdateMethod = (shouldRender: boolean) => void; //*
-
 export interface IChangeLink {
   pathname: string;
   search?: string;
