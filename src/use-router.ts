@@ -1,10 +1,6 @@
 import React from "react";
-import { IInitRouter, router } from "./router";
-
-interface IRemappedInitRouterProps
-  extends Omit<IInitRouter, "limitedRouteTree"> {
-  routeTree: IInitRouter["limitedRouteTree"];
-}
+import { router } from "./router";
+import type { IRemappedInitRouterProps } from "./types";
 
 export const useInitRouter = (
   props: IRemappedInitRouterProps,

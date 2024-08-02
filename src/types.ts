@@ -44,11 +44,16 @@ export type IRouteTree = Record<string, ILimitedRoute>;
 export type IFullRouteTree = Record<string, IRoute>;
 
 export interface IInitRouter {
-    prefix?: string;
-    origin?: string;
-    defaultPageTitle: string;
-    default404Title?: string;
-    limitedRouteTree: IRouteTree;
-    fallback: React.ReactNode;
-    defaultNotFoundComponent: React.ComponentType<any>;
-  }
+  prefix?: string;
+  origin?: string;
+  defaultPageTitle: string;
+  default404Title?: string;
+  limitedRouteTree: IRouteTree;
+  fallback: React.ReactNode;
+  defaultNotFoundComponent: React.ComponentType<any>;
+}
+
+export interface IRemappedInitRouterProps
+  extends Omit<IInitRouter, "limitedRouteTree"> {
+  routeTree: IInitRouter["limitedRouteTree"];
+}
