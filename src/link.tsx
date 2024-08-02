@@ -1,23 +1,8 @@
 import React from "react";
 import { router } from "./router";
+import { ILink } from "./types";
 
-interface LinkProps {
-  children: React.ReactNode;
-  to: string;
-  className?: string;
-  push?: boolean;
-  title: string;
-  hidden?: boolean;
-}
-
-export function Link({
-  children,
-  to,
-  className,
-  push,
-  title,
-  hidden,
-}: LinkProps) {
+export function Link({ children, to, className, push, title, hidden }: ILink) {
   if (hidden) return null;
 
   return (

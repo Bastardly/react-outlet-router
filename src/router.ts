@@ -1,41 +1,11 @@
-type UpdateMethod = (shouldRender: boolean) => void;
-
-interface IChangeLink {
-  pathname: string;
-  search?: string;
-  hash?: string;
-  data?: any;
-}
-
-export interface IRoute {
-  component: React.ComponentType<any>;
-  title?: string;
-  fallback?: React.ReactNode;
-  isActive: boolean;
-  path: string;
-  pattern?: RegExp;
-  children?: Record<string, IRoute>;
-}
-
-interface LimitedRoute
-  extends Pick<IRoute, "fallback" | "component" | "title" | "pattern"> {
-  children?: Record<string, LimitedRoute>;
-  removedIf?: boolean;
-}
-
-export type IRouteTree = Record<string, LimitedRoute>;
-
-type IFullRouteTree = Record<string, IRoute>;
-
-export interface IInitRouter {
-  prefix?: string;
-  origin?: string;
-  defaultPageTitle: string;
-  default404Title?: string;
-  limitedRouteTree: IRouteTree;
-  fallback: React.ReactNode;
-  defaultNotFoundComponent: React.ComponentType<any>;
-}
+import {
+  IRouteTree,
+  IFullRouteTree,
+  IChangeLink,
+  ILimitedRoute,
+  IRoute,
+  IInitRouter,
+} from "./types";
 
 class RouterService {
   static paramPattern = /\/:(\w+)\??\/?/g; // flemming/was/:here/now/where/is/:bob?/ - Matches /:here?/ and /:bob?/
@@ -52,7 +22,7 @@ class RouterService {
 
   #selectedPaths: string[] = [];
 
-  #defaultPageTitle: string;
+  #defaultPageTitle = "";
 
   #default404Title = "404 - Page not found";
 
@@ -72,10 +42,12 @@ class RouterService {
 
   Component: React.ComponentType<any> = () => null;
 
+  // @ts-expect-error - We set it in init
   defaultNotFoundComponent: React.ComponentType<any> = null;
 
   fallback: React.ReactNode;
 
+  // @ts-expect-error - We set it in init
   updateOutlet: (timeStamp: number) => void = null;
 
   constructor() {
@@ -122,6 +94,7 @@ class RouterService {
   }
 
   register(updateOutlet: (timeStamp: number) => void) {
+    // @ts-expect-error - Before init, it is null
     if (this.updateOutlet) return;
 
     this.updateOutlet = updateOutlet;
@@ -203,7 +176,7 @@ class RouterService {
     }
   }
 
-  #getRouteProperties(path: string, limitedRoute: LimitedRoute) {
+  #getRouteProperties(path: string, limitedRoute: ILimitedRoute) {
     this.#validatePath(path);
 
     return {
@@ -220,8 +193,8 @@ class RouterService {
 
     const enhanceChildren = (
       parent: IRoute,
-      children: IRouteTree,
-      fullParentPath: string
+      fullParentPath: string,
+      children?: IRouteTree
     ) => {
       if (!children || !parent) return {};
 
@@ -234,9 +207,10 @@ class RouterService {
 
         const fullPath = fullParentPath + path;
         this.#routePaths.push(fullPath);
+        // @ts-expect-error - Children cannot be undefined due to validation above loop
         parent.children[path] = {
           ...this.#getRouteProperties(path, limitedRoute),
-          children: enhanceChildren(parent, limitedRoute.children, fullPath),
+          children: enhanceChildren(parent, fullPath, limitedRoute.children),
         };
       });
     };
@@ -251,8 +225,8 @@ class RouterService {
 
       enhanceChildren(
         this.#routeTree[path],
-        limitedRouteTree[path].children,
-        path
+        path,
+        limitedRouteTree[path].children
       );
     });
 
@@ -321,7 +295,7 @@ class RouterService {
         this.Component = childrenCopy[currentMatch].component;
 
         nextTitle = childrenCopy[currentMatch].title || this.#defaultPageTitle;
-        childrenCopy = childrenCopy[currentMatch].children;
+        childrenCopy = childrenCopy[currentMatch].children || {};
         continue;
       } else {
         hasMatch = false;

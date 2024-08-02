@@ -1,26 +1,28 @@
 {
-	"compilerOptions": {
-		"baseUrl": "./src/index.ts",
-		"lib": [
-			"dom",
-			"ES2015"
-		],
-		"outDir": "lib",
-		"target": "ES2015",
-		"module": "es2015",
-		"moduleResolution": "node",
-		"declaration": true,
-		"noEmit": false,
-		"noImplicitAny": true,
-		"strict": true,
-		"typeRoots": [
-			"./node_modules/@types",
-		],
-		"paths": {}
-	},
-	"exclude": [
-		"./node_modules/*",
-		"./dist/*",
-		"./examples/*"
-	]
+    "compilerOptions": {
+        "baseUrl": "./src/index.ts",
+        "lib": [
+            "dom",
+            "ES2015"
+        ],
+        "jsx": "react",
+        "outDir": "dist",
+        "target": "ES2015",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "declaration": true,
+        "noEmit": false,
+        "noImplicitAny": true,
+        "strict": true,
+        "typeRoots": [
+            "./node_modules/@types",
+        ],
+        "paths": {}
+    },
+    "exclude": [
+        "./node_modules/*",
+        "./dist/*",
+        "./examples/*"
+    ]
 }

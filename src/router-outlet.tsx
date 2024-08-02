@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { Suspense } from "react";
 import { router } from "./router";
 

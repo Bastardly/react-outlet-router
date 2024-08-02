@@ -11,9 +11,17 @@
     "build": "tsc --project tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "react": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.11",
+    "@types/react": "^18.3.3",
+    "typescript": "5.4.5"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bastardly/react-outlet-router.git"
+    "url": "git+https://github.com/Bastardly/react-outlet-router.git"
   },
   "keywords": [
     "router",
@@ -22,5 +30,9 @@
     "client side"
   ],
   "author": "Flemming Hansen",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bastardly/react-outlet-router/issues"
+  },
+  "homepage": "https://github.com/Bastardly/react-outlet-router#readme"
 }
