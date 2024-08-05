@@ -12,6 +12,8 @@ React Outlet Router is a declarative client-side router, built with maintainabil
   
 ## Simple example
 
+[View more complex example here](https://github.com/Bastardly/react-outlet-router/tree/main/example)
+
 ```TypeScript
 import {
   RouterOutlet,
