@@ -1,5 +1,7 @@
-# React Outlet Router
+# Documentation
+Work in progress
 
+# React Outlet Router
 React Outlet Router is a declarative client-side router, built with maintainability in mind. 
 
 # Why use React Outlet Router?
@@ -83,3 +85,29 @@ root.render(
 );
 
 ```
+
+# Installation
+Installation is fairly simple using [Node's](https://nodejs.org) package manager.
+
+In your cli, run:
+
+```
+npm install @flemminghansen/react-outlet-router
+```
+
+# What does React Outlet Router contain?
+* useInitRouter - A hook that allows you to initialize and reinitialize your router based on dependencies.
+* router - The Router object that's available after initialization. This will provide use with a range of utilities. 
+* RouterOutlet - Where your best Route Match will be rendered.
+* Link component - Allows you to navigate React Outlet Router without reloading the entire page.
+* Redirect component - Can be used in the routeTree or as a component in your code to redirect your users on given criterias.
+
+# useInitRouter
+
+useInitRouter takes one object with the following keys
+
+* default404Title: string;
+If not page is found, thi"404 - Page not found",
+## defaultNotFoundComponent: () => <div>404 - Page not found</div>,
+## fallback: <MockPage text="Please wait while we load your page dynamically..." />,
+## routeTree
