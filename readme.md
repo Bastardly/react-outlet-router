@@ -107,7 +107,6 @@ npm install @flemminghansen/react-outlet-router
 useInitRouter takes one object with the following keys
 
 * default404Title: string;
-If not page is found, thi"404 - Page not found",
 * defaultNotFoundComponent: () => <div>404 - Page not found</div>.
 * fallback: <div>Please wait while we load your page dynamically...</div>.
 * routeTree: The object that defines the app.
