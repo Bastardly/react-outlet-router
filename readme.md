@@ -108,6 +108,7 @@ useInitRouter takes one object with the following keys
 
 * default404Title: string;
 If not page is found, thi"404 - Page not found",
-## defaultNotFoundComponent: () => <div>404 - Page not found</div>,
-## fallback: <MockPage text="Please wait while we load your page dynamically..." />,
-## routeTree
+* defaultNotFoundComponent: () => <div>404 - Page not found</div>.
+* fallback: <div>Please wait while we load your page dynamically...</div>.
+* routeTree: The object that defines the app.
+* prefix: A part that will we prefixed to the pathname, i.e.: "/client"
