@@ -109,15 +109,17 @@ npm install @flemminghansen/react-outlet-router
 useInitRouter takes one object with the following keys
 
 ```TypeScript
-* defaultPageTitle: string = "My default page title";
-* default404Title?: string = "404 - Page not found";
-* defaultNotFoundComponent: React.ComponentType<any> = () => <div>404 - Page not found</div>.
-* fallback: React.ReactNode = <div>Please wait while we load your page dynamically...</div>.
-* routeTree: IRouteTree = The object that defines the app.
-* prefix?: string = "/"
+interface IInitRouter {
+  prefix?: string;
+  defaultPageTitle: string;
+  default404Title?: string;
+  limitedRouteTree: IRouteTree;
+  fallback: React.ReactNode;
+  defaultNotFoundComponent: React.ComponentType<any>;
+}
 ```
 
-## defaultPageTitle(required)
+## defaultPageTitle(required) 
 Sets the document.title unless the routes specify something else
 
 ## default404Title(optional)
