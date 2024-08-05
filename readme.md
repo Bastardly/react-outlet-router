@@ -105,17 +105,25 @@ npm install @flemminghansen/react-outlet-router
 * Redirect component - Can be used in the routeTree or as a component in your code to redirect your users on given criterias.
 
 # useInitRouter
-
-useInitRouter takes one object with the following keys
+useInitRouter takes one object with the following keys.
 
 ```TypeScript
-interface IProps {
+interface IRemappedInitRouterProps {
   prefix?: string;
   defaultPageTitle: string;
   default404Title?: string;
-  routeTree: IRouteTree;
+  routeTree: Record<string, ILimitedRoute>;
   fallback: React.ReactNode;
   defaultNotFoundComponent: React.ComponentType<any>;
+}
+
+interface ILimitedRoute {
+    component: React.ComponentType<any>;
+    title?: string;
+    fallback?: React.ReactNode;
+    removedIf?: boolean;
+    pattern?: RegExp;
+    children?: Record<string, ILimitedRoute>;
 }
 ```
 
