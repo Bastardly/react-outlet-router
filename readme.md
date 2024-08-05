@@ -108,8 +108,33 @@ npm install @flemminghansen/react-outlet-router
 
 useInitRouter takes one object with the following keys
 
-* default404Title: string;
-* defaultNotFoundComponent: () => <div>404 - Page not found</div>.
-* fallback: <div>Please wait while we load your page dynamically...</div>.
-* routeTree: The object that defines the app.
-* prefix: A part that will we prefixed to the pathname, i.e.: "/client"
+* defaultPageTitle: string = "My default page title";
+* default404Title?: string = "404 - Page not found";
+* defaultNotFoundComponent: React.ComponentType<any> = () => <div>404 - Page not found</div>.
+* fallback: React.ReactNode = <div>Please wait while we load your page dynamically...</div>.
+* routeTree: IRouteTree = The object that defines the app.
+* prefix?: string = "/"
+
+## defaultPageTitle(required)
+Sets the document.title unless the routes specify something else
+
+## default404Title(optional)
+Defaults to: "404 - Page not found"
+
+## defaultNotFoundComponent(required)
+The component the router will render if there are no matches in the route tree.
+
+## fallback(required)
+The RouterOuter output is  wrapped in a [React Suspense Component](https://react.dev/reference/react/Suspense). The fallback is shown while a dynamically loaded page is loaded.
+
+## prefix(optional)
+Defaults to "/"
+
+A part that will we prefixed to the pathname. This can be used if your domain hold multiple apps that lives under prefixes, such as:
+* https://www.mydomain.com/myapp
+* https://www.mydomain.com/mysecondapp
+
+Then you can prefix each app with "/myapp" or "mysecondapp", and each app will prefix every route with that prefix, thereby keeping the scope.
+
+## routeTree(required)
+work in progress

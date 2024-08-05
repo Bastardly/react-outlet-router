@@ -28,6 +28,7 @@ class RouterService {
 
   prefix = "/";
 
+  //  todo remove?
   origin = window.location.origin;
 
   url = new URL(window.location.href);
