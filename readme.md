@@ -109,11 +109,11 @@ npm install @flemminghansen/react-outlet-router
 useInitRouter takes one object with the following keys
 
 ```TypeScript
-interface IInitRouter {
+interface IProps {
   prefix?: string;
   defaultPageTitle: string;
   default404Title?: string;
-  limitedRouteTree: IRouteTree;
+  routeTree: IRouteTree;
   fallback: React.ReactNode;
   defaultNotFoundComponent: React.ComponentType<any>;
 }
