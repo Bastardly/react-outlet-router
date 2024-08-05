@@ -143,8 +143,8 @@ The RouterOuter output is  wrapped in a [React Suspense Component](https://react
 Defaults to "/"
 
 A part that will we prefixed to the pathname. This can be used if your domain hold multiple apps that lives under prefixes, such as:
-* https://www.mydomain.com/myapp
-* https://www.mydomain.com/mysecondapp
+* mydomain.com/myapp
+* mydomain.com/mysecondapp
 
 Then you can prefix each app with "/myapp" or "mysecondapp", and each app will prefix every route with that prefix, thereby keeping the scope.
 
