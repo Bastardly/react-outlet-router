@@ -152,8 +152,8 @@ Then you can prefix each app with "/myapp" or "mysecondapp", and each app will p
 work in progress
 
 # Route to 1.0
-1) Finish documentation
-2) Get 100% test coverage
-3) Clean up the code and make it more readable
-4) Optimize
+1) Finish documentation.
+2) Get 100% test coverage.
+3) Clean up the code and make it more readable.
+4) Optimize.
 5) JSDoc documentation in code for better developer experience.
