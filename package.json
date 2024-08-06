@@ -27,7 +27,9 @@
     "router",
     "react",
     "routing",
-    "client side"
+    "client side",
+    "react-router",
+    "react router"
   ],
   "author": "Flemming Hansen",
   "license": "MIT",
