@@ -195,14 +195,16 @@ Currently redirect is done with the Redirect component, but this may be added as
 Sets the component that will be rendered at the RouterOutput if route is match.
 
 #### pattern: RegExp - (optional)
-Pattern overrides the given path for the route. It is recommended to use with a param tought e.g. `/:userid`, so that the value can be read with the `router.getParams` method.
+Pattern overrides the given path for the route. It is recommended to use with a param e.g. `/:userid`, so that the value can be read with the `router.getParams` method.
 
 ```TypeScript
         "/user": {
           component: ParentPage,
           children: {
             "/:userid": {
-              pattern: new RegExp(/^\d+$/), // will match integers like /1234 but not strings like /123s
+              // pattern will match integers like /1234
+              // but not strings like /123s
+              pattern: new RegExp(/^\d+$/),
               component: UserPageForId, 
             },
           },
