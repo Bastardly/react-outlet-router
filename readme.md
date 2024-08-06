@@ -105,14 +105,14 @@ npm install @flemminghansen/react-outlet-router
 * Redirect component - Can be used in the routeTree or as a component in your code to redirect your users on given criterias.
 
 # useInitRouter
-useInitRouter takes one object with the following keys.
+useInitRouter takes one object with the following keys as defined by the interface IRemappedInitRouterProps.
 
 ```TypeScript
 interface IRemappedInitRouterProps {
   prefix?: string;
   defaultPageTitle: string;
   default404Title?: string;
-  routeTree: Record<string, ILimitedRoute>;
+  routeTree: Record<string, ILimitedRoute>; // key is the next part of the route, e.g. "/user"
   fallback: React.ReactNode;
   defaultNotFoundComponent: React.ComponentType<any>;
 }
@@ -149,11 +149,53 @@ A part that will we prefixed to the pathname. This can be used if your domain ho
 Then you can prefix each app with "/myapp" or "mysecondapp", and each app will prefix every route with that prefix, thereby keeping the scope.
 
 ## routeTree(required)
+The routeTree is of type `Record<string, ILimitedRoute>;`, where the string is the path. 
+
+Each path must be prefixed with "/" e.g. "/user" or "/blog"
+
+You can then use children to expand paths as in this example where the path to `SettingsPage` will be `/user/settings`.
+
+```TypeScript
+        "/user": {
+          title: "User Page",
+          component: UserPage,
+          children: {
+            "/settings": { 
+              title: "Settings page",
+              component: SettingsPage,
+            },
+          },
+        },
+```
+
+It's also possible to add params as a wildcard. These params can use used with the `router.getParams` method to allow the component to handle further rendering.
+But is can also be used to create custom 404 pages, or automatically redirect the user to a different path.
+
+Currently redirect is done with the Redirect component, but this may be added as an option to the route in the future. See example:
+
+```TypeScript
+        "/user": {
+          title: "User Page",
+          component: UserPage,
+          children: {
+            "/settings": { 
+              title: "Settings page",
+              component: SettingsPage,
+            },
+            "/:invalid": { 
+              title: "Invalid page - redirecting",
+              component: () => <Redirect to="/user">, // This could also be a custom 404 page
+            },
+          },
+        },
+```
+
+
 work in progress
 
 # Route to 1.0
 1) Finish documentation.
-2) Get 100% test coverage.
-3) Clean up the code and make it more readable.
+2) Get 100% test coverage and harden code.
+3) Clean up, and make it more readable.
 4) Optimize.
 5) JSDoc documentation in code for better developer experience.
