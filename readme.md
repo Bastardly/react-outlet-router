@@ -179,16 +179,61 @@ Currently redirect is done with the Redirect component, but this may be added as
           component: UserPage,
           children: {
             "/settings": { 
-              title: "Settings page",
+              title: "User settings",
               component: SettingsPage,
             },
             "/:invalid": { 
-              title: "Invalid page - redirecting",
               component: () => <Redirect to="/user">, // This could also be a custom 404 page
             },
           },
         },
 ```
+
+### Properties
+
+#### component: React.ComponentType<any> - (required)
+Sets the component that will be rendered at the RouterOutput if route is match.
+
+#### pattern: RegExp - (optional)
+Pattern overrides the given path for the route. It is recommended to use with a param tought e.g. `/:userid`, so that the value can be read with the `router.getParams` method.
+
+```TypeScript
+        "/user": {
+          component: ParentPage,
+          children: {
+            "/:userid": {
+              pattern: new RegExp(/^\d+$/), // will match integers like /1234 but not strings like /123s
+              component: UserPageForId, 
+            },
+          },
+        },
+```
+In the above example, the userid must be an integer in order to match the pattern. 
+* `/user/1234` == match
+* `/user/1234s` == nomatch
+
+Then in the `UserPageForId` component we use the `router.getParams` method to get the value.
+
+```TypeScript
+import React from "react";
+import { router } from "@flemminghansen/react-outlet-router";
+
+export function UserPageForId() {
+  const { userid } = router.getParams();
+  // Do magics with the userid which you know is an integer.
+  ...
+}
+```
+
+#### children: Record<string, ILimitedRoute> - (optional)
+children is an object from which you can expand the route as described under routeTree 
+
+#### title: string - (optional)
+Sets `document.title` for the given route
+
+#### fallback: React.ComponentType<any> - (optional)
+Sets a fallback for the given route. If no component is passed, it defaults to the fallback you've set for the router.
+
 
 
 work in progress
