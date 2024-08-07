@@ -1,5 +1,5 @@
 # Documentation
-Work in progress
+Work in progress - Not ready for production - errors may occur
 
 # React Outlet Router
 React Outlet Router is a declarative client-side router, built with maintainability in mind. 
