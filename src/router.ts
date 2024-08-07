@@ -102,13 +102,18 @@ class RouterService {
     this.#setBestRouteComponent();
   }
 
+  /**
+   * Get pathname without prefix
+   * @returns string
+   */
   getPathName() {
     return this.#removePrefixFromPathName(this.url.pathname);
   }
 
   getParams() {
     const state: Record<string, string> = {};
-    const parts = this.url.pathname.split("/").filter((v) => !!v.length);
+    const pathname = this.#removePrefixFromPathName(this.url.pathname);
+    const parts = pathname.split("/").filter((v) => !!v.length);
     this.#selectedPaths.forEach((path, index) => {
       if (path.match(RouterService.paramPattern)) {
         state[path.slice(2)] = parts[index]; // removes /: from key
@@ -236,7 +241,8 @@ class RouterService {
 
   #setUrlFromString(path: string) {
     this.previousUrl = this.url;
-    this.url = new URL(path, this.origin);
+    const fullPath = this.prefix + this.#removePrefixFromPathName(path);
+    this.url = new URL(fullPath, this.origin);
   }
 
   #removePrefixFromPathName(path: string) {
@@ -248,7 +254,7 @@ class RouterService {
   #setBestRouteComponent() {
     if (!this.updateOutlet || !this.#isInitialized) return;
 
-    const { pathname } = this.url;
+    const pathname = this.#removePrefixFromPathName(this.url.pathname);
 
     if (pathname === "/") {
       this.Component = this.#routeTree["/"].component;
@@ -315,7 +321,7 @@ class RouterService {
   }
 
   #getFullUrl({ pathname, hash, search }: IChangeLink) {
-    const fullPathName = this.#removePrefixFromPathName(pathname);
+    const fullPathName = this.prefix + this.#removePrefixFromPathName(pathname);
     const url = new URL(fullPathName, this.origin);
 
     if (search) {
