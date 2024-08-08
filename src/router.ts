@@ -123,34 +123,36 @@ class RouterService {
   }
 
   push(values: IChangeLink | string, data?: any) {
-    if (typeof values === "string") {
-      this.#setUrlFromString(values);
-      window.history.pushState(data, "", values);
-    } else {
-      const fullUrl = this.#getFullUrl(values);
-      window.history.pushState(values.data, "", fullUrl);
-    }
-
-    if (data) {
-      this.#dataState.set(this.url.pathname, data);
-    }
-
-    this.#setBestRouteComponent();
+    this.#navigate(values, true, data);
   }
 
   replace(values: IChangeLink | string, data?: any) {
+    this.#navigate(values, false, data);
+  }
+
+  #navigate(values: IChangeLink | string, push: boolean, data?: any) {
     if (typeof values === "string") {
       this.#setUrlFromString(values);
-      window.history.replaceState(data, "", values);
+      if (push) {
+        window.history.pushState(data, "", values);
+      } else {
+        window.history.replaceState(data, "", values);
+      }
     } else {
       const fullUrl = this.#getFullUrl(values);
-      window.history.replaceState(values.data, "", fullUrl);
+      if (push) {
+        window.history.pushState(values.data, "", fullUrl);
+      } else {
+        window.history.replaceState(values.data, "", fullUrl);
+      }
     }
 
     if (data) {
       this.#dataState.set(this.url.pathname, data);
     }
-    this.#setBestRouteComponent();
+    window.requestAnimationFrame(() => {
+      this.#setBestRouteComponent();
+    });
   }
 
   getUrlData(url: string | URL, clear?: boolean) {
