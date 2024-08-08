@@ -8,6 +8,10 @@ export function RouterOutlet() {
     router.register((timeStamp) => setTimeStamp(() => timeStamp));
   }, []);
 
+  if (!router.isInitialized) {
+    return router.fallback;
+  }
+
   return (
     <Suspense fallback={router.fallback}>
       <router.Component />
