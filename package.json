@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"
   },
   "peerDependencies": {
@@ -21,6 +22,7 @@
     "@types/node": "^20.12.11",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.7",
+    "@vitest/coverage-v8": "^4.1.0",
     "@vitejs/plugin-react": "^6.0.1",
     "jsdom": "^29.0.0",
     "react": "^18.3.1",
