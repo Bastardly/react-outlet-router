@@ -4,7 +4,7 @@ import type { IRemappedInitRouterProps } from "./types";
 
 export const useInitRouter = (
   props: IRemappedInitRouterProps,
-  dependencies?: any[]
+  dependencies?: React.DependencyList,
 ) => {
   React.useEffect(() => {
     router.init({

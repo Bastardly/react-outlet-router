@@ -18,7 +18,7 @@ class RouterService {
 
   static invalid = "--invalid--";
 
-  #dataState = new Map<string | URL, any>();
+  #dataState = new Map<string | URL, unknown>();
 
   #selectedPaths: string[] = [];
 
@@ -41,10 +41,10 @@ class RouterService {
 
   #routePaths: string[] = [];
 
-  Component: React.ComponentType<any> = () => null;
+  Component: React.ComponentType<object> = () => null;
 
   // @ts-expect-error - We set it in init
-  defaultNotFoundComponent: React.ComponentType<any> = null;
+  defaultNotFoundComponent: React.ComponentType<object> = null;
 
   fallback: React.ReactNode;
 
@@ -54,6 +54,9 @@ class RouterService {
   constructor() {
     window.addEventListener("popstate", () => {
       if (!this.updateOutlet) return;
+
+      this.previousUrl = this.url;
+      this.url = new URL(window.location.href);
 
       this.#setBestRouteComponent();
     });
@@ -98,12 +101,14 @@ class RouterService {
   }
 
   register(updateOutlet: (timeStamp: number) => void) {
-    // @ts-expect-error - Before init, it is null
-    if (this.updateOutlet) return;
-
     this.updateOutlet = updateOutlet;
 
     this.#setBestRouteComponent();
+  }
+
+  unregister() {
+    // @ts-expect-error - Reset to null for cleanup
+    this.updateOutlet = null;
   }
 
   /**
@@ -120,27 +125,28 @@ class RouterService {
     const parts = pathname.split("/").filter((v) => !!v.length);
     this.#selectedPaths.forEach((path, index) => {
       if (path.match(RouterService.paramPattern)) {
-        state[path.slice(2)] = parts[index]; // removes /: from key
+        state[path.slice(2).replace(/\?$/, "")] = parts[index]; // removes /: and trailing ? from key
       }
     });
     return state;
   }
 
-  push(values: IChangeLink | string, data?: any) {
+  push(values: IChangeLink | string, data?: unknown) {
     this.#navigate(values, true, data);
   }
 
-  replace(values: IChangeLink | string, data?: any) {
+  replace(values: IChangeLink | string, data?: unknown) {
     this.#navigate(values, false, data);
   }
 
-  #navigate(values: IChangeLink | string, push: boolean, data?: any) {
+  #navigate(values: IChangeLink | string, push: boolean, data?: unknown) {
     if (typeof values === "string") {
       this.#setUrlFromString(values);
+      const normalizedUrl = this.url.pathname + this.url.search + this.url.hash;
       if (push) {
-        window.history.pushState(data, "", values);
+        window.history.pushState(data, "", normalizedUrl);
       } else {
-        window.history.replaceState(data, "", values);
+        window.history.replaceState(data, "", normalizedUrl);
       }
     } else {
       const fullUrl = this.#getFullUrl(values);
@@ -173,10 +179,14 @@ class RouterService {
 
   #validatePath(path: string) {
     if (path.match(RouterService.doubleSlash)) {
-      // throw new Error(`Path ${path} is invalid: Path contains //`);
+      console.warn(
+        `Route path "${path}" contains "//". This may cause unexpected matching behavior.`,
+      );
     }
     if (path[0] !== "/") {
-      // throw new Error(`Path ${path} is invalid: All paths must a start with /`);
+      console.warn(
+        `Route path "${path}" does not start with "/". All paths must start with /.`,
+      );
     }
   }
 
@@ -198,7 +208,7 @@ class RouterService {
     const enhanceChildren = (
       parent: IRoute,
       fullParentPath: string,
-      children?: IRouteTree
+      children?: IRouteTree,
     ) => {
       if (!children || !parent) return {};
 
@@ -211,11 +221,15 @@ class RouterService {
 
         const fullPath = fullParentPath + path;
         this.#routePaths.push(fullPath);
-        // @ts-expect-error - Children cannot be undefined due to validation above loop
-        parent.children[path] = {
+
+        const childRoute: IRoute = {
           ...this.#getRouteProperties(path, limitedRoute),
-          children: enhanceChildren(parent, fullPath, limitedRoute.children),
+          children: {},
         };
+
+        enhanceChildren(childRoute, fullPath, limitedRoute.children);
+
+        parent.children![path] = childRoute;
       });
     };
 
@@ -230,7 +244,7 @@ class RouterService {
       enhanceChildren(
         this.#routeTree[path],
         path,
-        limitedRouteTree[path].children
+        limitedRouteTree[path].children,
       );
     });
 
@@ -244,81 +258,100 @@ class RouterService {
   }
 
   #removePrefixFromPathName(path: string) {
-    return path
-      .replace(this.prefix, "/")
-      .replace(RouterService.doubleSlash, "/");
+    if (this.prefix && path.startsWith(this.prefix)) {
+      path = "/" + path.slice(this.prefix.length);
+    }
+    return path.replace(RouterService.doubleSlash, "/");
   }
 
   #setBestRouteComponent() {
     if (!this.updateOutlet || !this.isInitialized) return;
 
-    window.requestAnimationFrame(() => {
-      const pathname = this.#removePrefixFromPathName(this.url.pathname);
+    const pathname = this.#removePrefixFromPathName(this.url.pathname);
 
-      if (pathname === "/") {
-        this.Component = this.#routeTree["/"].component;
+    if (pathname === "/") {
+      const rootRoute = this.#routeTree["/"];
 
+      if (!rootRoute) {
+        this.Component = this.defaultNotFoundComponent;
+        document.title = this.#default404Title;
         return this.updateOutlet(new Date().getTime());
       }
 
-      const routerPaths = pathname
-        .split("/")
-        .filter((path) => !!path.length)
-        .map((path) => "/" + path);
-      let childrenCopy = this.#routeTree;
-      let currentMatch = RouterService.invalid;
-      let nextTitle = this.#defaultPageTitle;
-      let hasMatch = true;
-      this.#selectedPaths = [];
+      this.Component = rootRoute.component;
 
-      for (let i = 0; i < routerPaths.length; i++) {
-        const currentPath = routerPaths[i];
-        const paths = Object.keys(childrenCopy).filter((path) => path !== "/");
-        const shouldContinue = paths.some((path) => {
-          const route = childrenCopy[path];
-          const returnValid = () => {
-            this.#selectedPaths.push(path);
-            currentMatch = path;
-            return true;
-          };
+      return this.updateOutlet(new Date().getTime());
+    }
 
-          if (route.pattern) {
-            const sliced = currentPath.slice(1); // remove '/'
+    const routerPaths = pathname
+      .split("/")
+      .filter((path) => !!path.length)
+      .map((path) => "/" + path);
+    let childrenCopy = this.#routeTree;
+    let currentMatch = RouterService.invalid;
+    let nextTitle = this.#defaultPageTitle;
+    let hasMatch = true;
+    this.#selectedPaths = [];
 
-            return sliced.match(route.pattern) ? returnValid() : false;
-          }
+    for (let i = 0; i < routerPaths.length; i++) {
+      const currentPath = routerPaths[i];
+      currentMatch = RouterService.invalid;
 
-          if (currentPath.match(path)) {
-            return returnValid();
-          } else if (path.match(RouterService.paramArrayPattern)) {
-            return returnValid();
-          }
-
-          return false;
-        });
-
-        if (shouldContinue) {
-          this.Component = childrenCopy[currentMatch].component;
-
-          nextTitle =
-            childrenCopy[currentMatch].title || this.#defaultPageTitle;
-          childrenCopy = childrenCopy[currentMatch].children || {};
-          continue;
-        } else {
-          hasMatch = false;
-          break;
-        }
+      // O(1) exact-match lookup before iterating all keys
+      const exactRoute = childrenCopy[currentPath];
+      if (exactRoute && !exactRoute.pattern) {
+        this.#selectedPaths.push(currentPath);
+        currentMatch = currentPath;
       }
 
-      if (!hasMatch) {
-        this.Component = this.defaultNotFoundComponent;
-        document.title = this.#default404Title;
+      const shouldContinue =
+        currentMatch !== RouterService.invalid ||
+        (() => {
+          const paths = Object.keys(childrenCopy).filter(
+            (path) => path !== "/",
+          );
+          return paths.some((path) => {
+            const route = childrenCopy[path];
+            const returnValid = () => {
+              this.#selectedPaths.push(path);
+              currentMatch = path;
+              return true;
+            };
+
+            if (route.pattern) {
+              const sliced = currentPath.slice(1); // remove '/'
+
+              return sliced.match(route.pattern) ? returnValid() : false;
+            }
+
+            if (path.match(RouterService.paramArrayPattern)) {
+              return returnValid();
+            }
+
+            return false;
+          });
+        })();
+
+      if (shouldContinue) {
+        this.Component = childrenCopy[currentMatch].component;
+
+        nextTitle = childrenCopy[currentMatch].title || this.#defaultPageTitle;
+        childrenCopy = childrenCopy[currentMatch].children || {};
+        continue;
       } else {
-        document.title = nextTitle;
+        hasMatch = false;
+        break;
       }
+    }
 
-      this.updateOutlet(new Date().getTime());
-    });
+    if (!hasMatch) {
+      this.Component = this.defaultNotFoundComponent;
+      document.title = this.#default404Title;
+    } else {
+      document.title = nextTitle;
+    }
+
+    this.updateOutlet(new Date().getTime());
   }
 
   #getFullUrl({ pathname, hash, search }: IChangeLink) {

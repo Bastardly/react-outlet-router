@@ -1,14 +1,14 @@
 {
     "compilerOptions": {
-        "baseUrl": "./src/index.ts",
+        "baseUrl": "./src",
         "lib": [
             "dom",
-            "ES2015"
+            "ES2020"
         ],
-        "jsx": "react",
+        "jsx": "react-jsx",
         "outDir": "dist",
-        "target": "ES2015",
-        "module": "es2015",
+        "target": "ES2020",
+        "module": "CommonJS",
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "declaration": true,
@@ -16,13 +16,15 @@
         "noImplicitAny": true,
         "strict": true,
         "typeRoots": [
-            "./node_modules/@types",
+            "./node_modules/@types"
         ],
         "paths": {}
     },
     "exclude": [
         "./node_modules/*",
         "./dist/*",
-        "./example/*"
+        "./example/*",
+        "./src/__tests__/*",
+        "./vitest.config.ts"
     ]
 }

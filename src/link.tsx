@@ -9,11 +9,12 @@ export function Link({ children, to, className, push, title, hidden }: ILink) {
     <a
       href={to}
       onClick={(e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)
+          return;
+
         e.preventDefault();
 
-        return push
-          ? router.push({ pathname: to })
-          : router.replace({ pathname: to });
+        push ? router.push({ pathname: to }) : router.replace({ pathname: to });
       }}
       className={className}
       title={title}
