@@ -17,14 +17,12 @@ afterEach(() => {
 
 describe("RouterOutlet", () => {
   it("renders fallback when router is not initialized", () => {
-    // @ts-expect-error - reset for test
     router.isInitialized = false;
     router.fallback = <div>Loading...</div>;
 
     render(<RouterOutlet />);
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
-    // @ts-expect-error - restore
     router.isInitialized = false;
   });
 

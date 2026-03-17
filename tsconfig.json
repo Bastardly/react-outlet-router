@@ -11,14 +11,11 @@
         "module": "CommonJS",
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
         "declaration": true,
-        "noEmit": false,
         "noImplicitAny": true,
         "strict": true,
-        "typeRoots": [
-            "./node_modules/@types"
-        ],
-        "paths": {}
+        "skipLibCheck": true
     },
     "exclude": [
         "./node_modules/*",
