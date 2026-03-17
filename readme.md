@@ -1,15 +1,18 @@
 # Disclaimer
-Work in progress - Not ready for production - errors may occur
+
+Early release — API may change between minor versions.
 
 # React Outlet Router
-React Outlet Router is a declarative client-side router, built with maintainability in mind. 
+
+React Outlet Router is a declarative client-side router, built with maintainability in mind.
 
 # Why use React Outlet Router?
--  React Outlet Router is only 5kb minified and g-zipped.
--  Declarative, everything can be defined in a single object, which provides a clear overview of the entire app.
--  Flexible enough to use string matching, params and even regex patterns.
--  Typesafe - 100% written in TypeScript
-  
+
+- React Outlet Router is only 5kb minified and g-zipped.
+- Declarative, everything can be defined in a single object, which provides a clear overview of the entire app.
+- Flexible enough to use string matching, params and even regex patterns.
+- Typesafe - 100% written in TypeScript
+
 ## Simple example
 
 [View more complex example here](https://github.com/Bastardly/react-outlet-router/tree/main/example)
@@ -43,20 +46,19 @@ function App() {
           component: MainPage,
         },
         "/loggedin": {
-          removedIf: !isLoggedIn, 
+          removedIf: !isLoggedIn,
           title: "Page one",
           component: () => <MockPage text="Welcome!!" />,
           children: {
             // loggedin/user
-            "/user": { 
+            "/user": {
               title: "User page",
               component: () => <MockPage text="You are awesome!" />,
             },
           },
         },
-
-        },
       },
+    },
 
     [isLoggedIn]
   );
@@ -89,6 +91,7 @@ root.render(
 ```
 
 # Installation
+
 Installation is fairly simple using [Node's](https://nodejs.org) package manager.
 
 In your cli, run:
@@ -98,13 +101,15 @@ npm install @flemminghansen/react-outlet-router
 ```
 
 # What does React Outlet Router contain?
-* useInitRouter - A hook that allows you to initialize and reinitialize your router based on dependencies.
-* router - The Router object that's available after initialization. This will provide use with a range of utilities. 
-* RouterOutlet - Where your best Route Match will be rendered.
-* Link component - Allows you to navigate React Outlet Router without reloading the entire page.
-* Redirect component - Can be used in the routeTree or as a component in your code to redirect your users on given criterias.
+
+- useInitRouter - A hook that allows you to initialize and reinitialize your router based on dependencies.
+- router - The Router object that's available after initialization. This will provide use with a range of utilities.
+- RouterOutlet - Where your best Route Match will be rendered.
+- Link component - Allows you to navigate React Outlet Router without reloading the entire page.
+- Redirect component - Can be used in the routeTree or as a component in your code to redirect your users on given criterias.
 
 # useInitRouter
+
 useInitRouter takes one object with the following keys as defined by the interface IRemappedInitRouterProps.
 
 ```TypeScript
@@ -114,11 +119,11 @@ interface IRemappedInitRouterProps {
   default404Title?: string;
   routeTree: Record<string, ILimitedRoute>; // key is the next part of the route, e.g. "/user"
   fallback: React.ReactNode;
-  defaultNotFoundComponent: React.ComponentType<any>;
+  defaultNotFoundComponent: React.ComponentType<object>;
 }
 
 interface ILimitedRoute {
-    component: React.ComponentType<any>;
+    component: React.ComponentType<object>;
     title?: string;
     fallback?: React.ReactNode;
     removedIf?: boolean;
@@ -127,29 +132,36 @@ interface ILimitedRoute {
 }
 ```
 
-## defaultPageTitle(required) 
+## defaultPageTitle(required)
+
 Sets the document.title unless the routes specify something else
 
 ## default404Title(optional)
+
 Defaults to: "404 - Page not found"
 
 ## defaultNotFoundComponent(required)
+
 The component the router will render if there are no matches in the route tree.
 
 ## fallback(required)
-The RouterOuter output is  wrapped in a [React Suspense Component](https://react.dev/reference/react/Suspense). The fallback is shown while a dynamically loaded page is loaded.
+
+The RouterOuter output is wrapped in a [React Suspense Component](https://react.dev/reference/react/Suspense). The fallback is shown while a dynamically loaded page is loaded.
 
 ## prefix(optional)
+
 Defaults to "/"
 
 A part that will we prefixed to the pathname. This can be used if your domain hold multiple apps that lives under prefixes, such as:
-* mydomain.com/myapp
-* mydomain.com/mysecondapp
+
+- mydomain.com/myapp
+- mydomain.com/mysecondapp
 
 Then you can prefix each app with "/myapp" or "mysecondapp", and each app will prefix every route with that prefix, thereby keeping the scope.
 
 ## routeTree(required)
-The routeTree is of type `Record<string, ILimitedRoute>;`, where the string is the path. 
+
+The routeTree is of type `Record<string, ILimitedRoute>;`, where the string is the path.
 
 Each path must be prefixed with "/" e.g. "/user" or "/blog"
 
@@ -160,7 +172,7 @@ You can then use children to expand paths as in this example where the path to `
           title: "User Page",
           component: UserPage,
           children: {
-            "/settings": { 
+            "/settings": {
               title: "Settings page",
               component: SettingsPage,
             },
@@ -178,11 +190,11 @@ Currently redirect is done with the Redirect component, but this may be added as
           title: "User Page",
           component: UserPage,
           children: {
-            "/settings": { 
+            "/settings": {
               title: "User settings",
               component: SettingsPage,
             },
-            "/:invalid": { 
+            "/:invalid": {
               component: () => <Redirect to="/user">, // This could also be a custom 404 page
             },
           },
@@ -191,10 +203,12 @@ Currently redirect is done with the Redirect component, but this may be added as
 
 ### Properties
 
-#### component: React.ComponentType<any> - (required)
+#### component: React.ComponentType<object> - (required)
+
 Sets the component that will be rendered at the RouterOutput if route is match.
 
 #### pattern: RegExp - (optional)
+
 Pattern overrides the given path for the route. It is recommended to use with a param e.g. `/:userid`, so that the value can be read with the `router.getParams` method.
 
 ```TypeScript
@@ -205,14 +219,16 @@ Pattern overrides the given path for the route. It is recommended to use with a 
               // pattern will match integers like /1234
               // but not strings like /123s
               pattern: new RegExp(/^\d+$/),
-              component: UserPageForId, 
+              component: UserPageForId,
             },
           },
         },
 ```
-In the above example, the userid must be an integer in order to match the pattern. 
-* `/user/1234` == match
-* `/user/1234s` == nomatch
+
+In the above example, the userid must be an integer in order to match the pattern.
+
+- `/user/1234` == match
+- `/user/1234s` == nomatch
 
 Then in the `UserPageForId` component we use the `router.getParams` method to get the value.
 
@@ -228,21 +244,22 @@ export function UserPageForId() {
 ```
 
 #### children: Record<string, ILimitedRoute> - (optional)
-children is an object from which you can expand the route as described under routeTree 
+
+children is an object from which you can expand the route as described under routeTree
 
 #### title: string - (optional)
+
 Sets `document.title` for the given route
 
-#### fallback: React.ComponentType<any> - (optional)
+#### fallback: React.ReactNode - (optional)
+
 Sets a fallback for the given route. If no component is passed, it defaults to the fallback you've set for the router.
 
-
-
-work in progress
-
 # Route to 1.0
-1) Finish documentation.
-2) Get 100% test coverage and harden code.
-3) Clean up, and make it more readable.
-4) Optimize.
-5) JSDoc documentation in code for better developer experience.
+
+1. ~~Get test coverage and harden code.~~ Done — 42 tests via Vitest.
+2. ~~Clean up, and make it more readable.~~ Done — bug fixes, type safety improvements.
+3. ~~Optimize.~~ Done — synchronous route resolution, O(1) exact-match lookup.
+4. ~~Add CI pipeline.~~ Done — GitHub Actions, Node  20.x, 22.x, 24.x matrix.
+5. Finish documentation.
+6. JSDoc documentation in code for better developer experience.

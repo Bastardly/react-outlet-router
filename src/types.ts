@@ -5,7 +5,7 @@ export interface ILink {
   to: string;
   className?: string;
   push?: boolean;
-  title: string;
+  title?: string;
   hidden?: boolean;
 }
 
@@ -18,11 +18,11 @@ export interface IChangeLink {
   pathname: string;
   search?: string;
   hash?: string;
-  data?: any;
+  data?: unknown;
 }
 
 export interface IRoute {
-  component: React.ComponentType<any>;
+  component: React.ComponentType<object>;
   title?: string;
   fallback?: React.ReactNode;
   isActive: boolean;
@@ -31,8 +31,10 @@ export interface IRoute {
   children?: Record<string, IRoute>;
 }
 
-export interface ILimitedRoute
-  extends Pick<IRoute, "fallback" | "component" | "title" | "pattern"> {
+export interface ILimitedRoute extends Pick<
+  IRoute,
+  "fallback" | "component" | "title" | "pattern"
+> {
   children?: Record<string, ILimitedRoute>;
   removedIf?: boolean;
 }
@@ -48,10 +50,12 @@ export interface IInitRouter {
   default404Title?: string;
   limitedRouteTree: IRouteTree;
   fallback: React.ReactNode;
-  defaultNotFoundComponent: React.ComponentType<any>;
+  defaultNotFoundComponent: React.ComponentType<object>;
 }
 
-export interface IRemappedInitRouterProps
-  extends Omit<IInitRouter, "limitedRouteTree"> {
+export interface IRemappedInitRouterProps extends Omit<
+  IInitRouter,
+  "limitedRouteTree"
+> {
   routeTree: IInitRouter["limitedRouteTree"];
 }

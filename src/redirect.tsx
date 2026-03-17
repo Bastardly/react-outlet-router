@@ -11,5 +11,5 @@ export function Redirect({ to, push }: IRedirect) {
     }
   }, [to, push]);
 
-  return <span />;
+  return null;
 }

@@ -6,6 +6,10 @@ export function RouterOutlet() {
 
   React.useEffect(() => {
     router.register((timeStamp) => setTimeStamp(() => timeStamp));
+
+    return () => {
+      router.unregister();
+    };
   }, []);
 
   if (!router.isInitialized) {

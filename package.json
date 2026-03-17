@@ -1,6 +1,6 @@
 {
   "name": "@flemminghansen/react-outlet-router",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Declarative client side router for React",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,15 +9,24 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "peerDependencies": {
-    "react": "18.3.1"
+    "react": ">=18.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^14.3.1",
     "@types/node": "^20.12.11",
     "@types/react": "^18.3.3",
-    "typescript": "5.4.5"
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "^29.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "5.4.5",
+    "vitest": "^4.1.0"
   },
   "repository": {
     "type": "git",
