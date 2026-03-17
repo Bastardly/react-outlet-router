@@ -4,6 +4,10 @@ Early release — API may change between minor versions.
 
 # React Outlet Router
 
+[![Socket](https://badge.socket.dev/npm/package/@flemminghansen/react-outlet-router/0.3.1)](https://socket.dev/npm/package/@flemminghansen/react-outlet-router)
+[![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://www.npmjs.com/package/@flemminghansen/react-outlet-router?activeTab=dependencies)
+[![code quality](https://img.shields.io/badge/code%20quality-TypeScript%20strict%20%2B%20Vitest-brightgreen)](https://github.com/Bastardly/react-outlet-router)
+
 React Outlet Router is a declarative client-side router, built with maintainability in mind.
 
 # Why use React Outlet Router?
@@ -260,6 +264,6 @@ Sets a fallback for the given route. If no component is passed, it defaults to t
 1. ~~Get test coverage and harden code.~~ Done — 42 tests via Vitest.
 2. ~~Clean up, and make it more readable.~~ Done — bug fixes, type safety improvements.
 3. ~~Optimize.~~ Done — synchronous route resolution, O(1) exact-match lookup.
-4. ~~Add CI pipeline.~~ Done — GitHub Actions, Node  20.x, 22.x, 24.x matrix.
+4. ~~Add CI pipeline.~~ Done — GitHub Actions, Node 20.x, 22.x, 24.x matrix.
 5. Finish documentation.
 6. JSDoc documentation in code for better developer experience.
