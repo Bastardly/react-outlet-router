@@ -260,6 +260,6 @@ Sets a fallback for the given route. If no component is passed, it defaults to t
 1. ~~Get test coverage and harden code.~~ Done — 42 tests via Vitest.
 2. ~~Clean up, and make it more readable.~~ Done — bug fixes, type safety improvements.
 3. ~~Optimize.~~ Done — synchronous route resolution, O(1) exact-match lookup.
-4. ~~Add CI pipeline.~~ Done — GitHub Actions, Node 18.x/20.x matrix.
+4. ~~Add CI pipeline.~~ Done — GitHub Actions, Node  20.x, 22.x, 24.x matrix.
 5. Finish documentation.
 6. JSDoc documentation in code for better developer experience.
