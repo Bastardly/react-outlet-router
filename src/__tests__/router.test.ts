@@ -71,6 +71,35 @@ describe("RouterService", () => {
 
       expect(router.Component).toBe(NotFound);
     });
+
+    it("uses provided origin when building URLs", () => {
+      initWithDefaults(
+        {
+          "/": { component: Home },
+          "/about": { component: About },
+        },
+        { origin: "https://example.test" },
+      );
+
+      router.push("/about");
+
+      expect(router.origin).toBe("https://example.test");
+      expect(router.url.origin).toBe("https://example.test");
+    });
+
+    it("handles missing limitedRouteTree without crashing", () => {
+      router.init({
+        defaultPageTitle: "Test",
+        defaultNotFoundComponent: NotFound,
+        fallback: null,
+        limitedRouteTree: undefined as unknown as Record<string, never>,
+      });
+
+      router.push({ pathname: "/missing" });
+
+      expect(router.isInitialized).toBe(true);
+      expect(router.Component).toBe(NotFound);
+    });
   });
 
   describe("route matching", () => {
@@ -185,6 +214,24 @@ describe("RouterService", () => {
 
       expect(router.Component).toBe(About);
     });
+
+    it("excludes child routes with removedIf: true", () => {
+      initWithDefaults({
+        "/users": {
+          component: Users,
+          children: {
+            "/list": { component: SubPage, removedIf: true },
+            "/active": { component: About },
+          },
+        },
+      });
+
+      router.push({ pathname: "/users/list" });
+      expect(router.Component).toBe(NotFound);
+
+      router.push({ pathname: "/users/active" });
+      expect(router.Component).toBe(About);
+    });
   });
 
   describe("getParams()", () => {
@@ -261,6 +308,19 @@ describe("RouterService", () => {
 
       pushStateSpy.mockRestore();
     });
+
+    it("replace() with string argument works", () => {
+      initWithDefaults({ "/": { component: Home } });
+
+      const replaceStateSpy = vi.spyOn(window.history, "replaceState");
+
+      router.replace("/about");
+
+      expect(router.url.pathname).toBe("/about");
+      expect(replaceStateSpy).toHaveBeenCalled();
+
+      replaceStateSpy.mockRestore();
+    });
   });
 
   describe("getUrlData()", () => {
@@ -283,6 +343,54 @@ describe("RouterService", () => {
 
       const cleared = router.getUrlData("/test");
       expect(cleared).toBeUndefined();
+    });
+
+    it("returns all stored URL data keys", () => {
+      initWithDefaults({ "/": { component: Home } });
+
+      router.push({ pathname: "/first" }, { id: 1 });
+      router.push({ pathname: "/second" }, { id: 2 });
+
+      const keys = Array.from(router.getUrlDataKeys());
+
+      expect(keys).toContain("/first");
+      expect(keys).toContain("/second");
+    });
+  });
+
+  describe("popstate listener", () => {
+    it("updates selected route on popstate when outlet is registered", () => {
+      initWithDefaults({
+        "/": { component: Home },
+        "/about": { component: About },
+      });
+
+      const updateSpy = vi.fn();
+      router.register(updateSpy);
+
+      window.history.pushState(null, "", "/about");
+      window.dispatchEvent(new PopStateEvent("popstate"));
+
+      expect(updateSpy).toHaveBeenCalled();
+      expect(router.Component).toBe(About);
+      expect(router.location.pathname).toBe("/about");
+    });
+
+    it("returns early on popstate when outlet is not registered", () => {
+      initWithDefaults({
+        "/": { component: Home },
+        "/about": { component: About },
+      });
+
+      router.push({ pathname: "/" });
+      router.unregister();
+
+      window.history.pushState(null, "", "/about");
+
+      expect(() => {
+        window.dispatchEvent(new PopStateEvent("popstate"));
+      }).not.toThrow();
+      expect(router.location.pathname).toBe("/");
     });
   });
 
@@ -323,6 +431,40 @@ describe("RouterService", () => {
 
       expect(router.getPathName()).toBe("/test");
     });
+
+    it("exposes current URL through location getter", () => {
+      initWithDefaults({ "/": { component: Home } });
+
+      router.push({ pathname: "/test" });
+
+      expect(router.location).toBe(router.url);
+      expect(router.location.pathname).toBe("/test");
+    });
+  });
+
+  describe("path validation warnings", () => {
+    it("warns when route path is malformed", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      initWithDefaults({
+        "bad//path": { component: Home },
+      } as Record<string, { component: typeof Home }>);
+
+      const messages = warnSpy.mock.calls.map(([message]) => String(message));
+
+      expect(
+        messages.some((message) =>
+          message.includes('contains "//". This may cause unexpected matching behavior.'),
+        ),
+      ).toBe(true);
+      expect(
+        messages.some((message) =>
+          message.includes('does not start with "/". All paths must start with /.'),
+        ),
+      ).toBe(true);
+
+      warnSpy.mockRestore();
+    });
   });
 
   describe("document.title management", () => {
@@ -346,6 +488,32 @@ describe("RouterService", () => {
       router.push({ pathname: "/nowhere" });
 
       expect(document.title).toBe("Custom 404");
+    });
+
+    it("builds full URL with search and hash", () => {
+      initWithDefaults({
+        "/": { component: Home },
+        "/about": { component: About },
+      });
+
+      const pushStateSpy = vi.spyOn(window.history, "pushState");
+
+      router.push({
+        pathname: "/about",
+        search: "?tab=info",
+        hash: "#summary",
+      });
+
+      expect(router.url.pathname).toBe("/about");
+      expect(router.url.search).toBe("?tab=info");
+      expect(router.url.hash).toBe("#summary");
+      expect(pushStateSpy).toHaveBeenCalledWith(
+        undefined,
+        "",
+        "/about?tab=info#summary",
+      );
+
+      pushStateSpy.mockRestore();
     });
   });
 });
