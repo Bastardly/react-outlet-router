@@ -6,7 +6,7 @@ Early release — API may change between minor versions.
 
 [![Socket](https://badge.socket.dev/npm/package/@flemminghansen/react-outlet-router/0.3.1)](https://socket.dev/npm/package/@flemminghansen/react-outlet-router)
 [![tests](https://github.com/Bastardly/react-outlet-router/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Bastardly/react-outlet-router/actions/workflows/ci.yml)
-[![coverage](https://codecov.io/github/Bastardly/react-outlet-router/graph/badge.svg?branch=main)](https://codecov.io/github/Bastardly/react-outlet-router)
+[![codecov](https://codecov.io/github/Bastardly/react-outlet-router/graph/badge.svg?token=33O9CLMXI2)](https://codecov.io/github/Bastardly/react-outlet-router)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://www.npmjs.com/package/@flemminghansen/react-outlet-router?activeTab=dependencies)
 [![code quality](https://img.shields.io/badge/code%20quality-TypeScript%20strict%20%2B%20Vitest-brightgreen)](https://github.com/Bastardly/react-outlet-router)
 
