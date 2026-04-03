@@ -1,7 +1,3 @@
-# Disclaimer
-
-Early release — API may change between minor versions.
-
 # React Outlet Router
 
 [![npm version](https://img.shields.io/npm/v/%40flemminghansen%2Freact-outlet-router)](https://www.npmjs.com/package/@flemminghansen/react-outlet-router)
